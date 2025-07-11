@@ -1,0 +1,245 @@
+<html>
+    <head>
+        <title>Canteen Management System</title>
+        <!-- Load static files -->
+        {% load static %}
+        
+        <!-- Bootstrap CSS (optional) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Your custom CSS -->
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        
+        <!-- Font Awesome (for icons) -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+        <style>
+            
+/* Menu Page */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+.menu-item {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Ensures content is stacked vertically */
+    justify-content: space-between; /* Distributes space evenly */
+    height: 400px; /* Fixed height for consistency */
+}
+
+.menu-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px; /* Optional: adds a slight radius to the image */
+    object-fit: cover; /* Ensures image fills the space proportionally */
+}
+
+.menu-item h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.menu-item p {
+    font-size: 16px;
+    color: #777;
+    text-align: center;
+    margin-bottom: 20px; /* Adds space before the footer */
+}
+
+.item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Ensures footer is at the bottom */
+}
+
+.price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #007BFF; /* Blue color for price */
+}
+
+.add-to-cart {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.menu-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers horizontally */
+    justify-content: center; /* Centers vertically */
+    text-align: center; /* Centers text in the h2 */
+    padding: 20px; /* Adds space around the content */
+    background-color: #f4f4f4; /* Subtle background color */
+    border-radius: 12px; /* Soft rounded corners for the header */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Adds a soft shadow for depth */
+}
+
+.menu-header h2 {
+    margin-bottom: 15px; /* Adds space between heading and input */
+    font-size: 24px; /* Adjusts font size for better readability */
+    font-weight: 600; /* Makes the heading bold */
+    color: #333; /* Sets a dark color for the text */
+}
+
+#menu-search {
+    width: 100%; /* Takes up full width inside the container */
+    max-width: 400px; /* Limits width for large screens */
+    padding: 12px 20px; /* Adds padding inside the input */
+    border-radius: 8px; /* Rounded corners for the input */
+    border: 1px solid #ccc; /* Light border */
+    font-size: 16px; /* Font size inside the input */
+    outline: none; /* Removes default outline */
+    transition: border-color 0.3s; /* Smooth transition on focus */
+}
+
+#menu-search:focus {
+    border-color: #007BFF; /* Changes border color when focused */
+}
+
+        /* Header Styles */
+        header {
+    background-color: #007BFF; /* Primary blue background */
+    color: white; /* Text color */
+    padding: 20px 40px; /* Padding around the header */
+    display: flex; /* Use Flexbox for alignment */
+    justify-content: space-between; /* Space out the header content */
+    align-items: center; /* Align items vertically centered */
+    border-bottom: 4px solid #0056b3; /* Adds a bottom border for separation */
+}
+
+header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0; /* Remove default margin */
+}
+
+nav {
+    display: flex;
+    gap: 20px; /* Adds space between links */
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease; /* Smooth transition on hover */
+}
+
+nav a:hover {
+    color: #f8f9fa; /* Lighter text on hover */
+}
+
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Canteen Management System</h1>
+            <nav>
+                <a href="{% url 'register' %}"> Login </a>
+                <a href="{% url 'menu_list' %}"> View Menu</a>
+                <a href="{% url 'place_order' %}">Place Order</a>
+                <a href="{% url 'feedback_form' %}">Give Feedback</a>
+                <a href="{% url 'admin:index' %}">Admin Panel</a>
+            </nav>
+        </header>
+
+        {% block content %}
+        <div class="menu-container">
+            <div class="menu-header">
+                <h2>Our Menu</h2>
+                <input type="text" id="menu-search" placeholder="Search menu items...">
+            </div>
+        </br></br>
+        
+        <div class="menu-grid">
+            {% for item in menu_items %}
+            <div class="menu-item">
+                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.description }}</p>
+                <div class="item-footer">
+                    <span class="price">${{ item.price }}</span>
+                    <button class="add-to-cart" data-item-id="{{ item.id }}">Add to Cart</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% csrf_token %} 
+
+        </div>
+        <script>
+            document.getElementById('menu-search').addEventListener('input', function() {
+                var searchQuery = this.value; //TODO: Add search value in html snippet (skip)
+                
+                fetch("{% url 'menu_list' %}?search=" + searchQuery)
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('menu-items-container').innerHTML = data;
+                    });
+            });
+
+            //Show cart 
+            document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-item-id');
+                
+                const formData = new FormData();
+                formData.append('item_id', itemId);
+                formData.append('csrfmiddlewaretoken', csrfToken);
+
+                fetch("{% url 'add_to_cart' %}", {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    alert(data.message);
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+
+        </script>
+        {% endblock %}
+        
+    </body>
+</html>
