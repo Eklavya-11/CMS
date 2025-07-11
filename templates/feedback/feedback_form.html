@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <title>Canteen Management System</title>
+        <!-- Load static files -->
+        {% load static %}
+        
+        <!-- Bootstrap CSS (optional) -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Your custom CSS -->
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        
+        <!-- Font Awesome (for icons) -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+        <style>
+
+        /* Header Styles */
+        header {
+    background-color: #007BFF; /* Primary blue background */
+    color: white; /* Text color */
+    padding: 20px 40px; /* Padding around the header */
+    display: flex; /* Use Flexbox for alignment */
+    justify-content: space-between; /* Space out the header content */
+    align-items: center; /* Align items vertically centered */
+    border-bottom: 4px solid #0056b3; /* Adds a bottom border for separation */
+}
+
+header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0; /* Remove default margin */
+}
+
+nav {
+    display: flex;
+    gap: 20px; /* Adds space between links */
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease; /* Smooth transition on hover */
+}
+
+nav a:hover {
+    color: #f8f9fa; /* Lighter text on hover */
+}
+
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Canteen Management System</h1>
+            <nav>
+                <a href="{% url 'register' %}"> Login </a>
+                <a href="{% url 'menu_list' %}"> View Menu</a>
+                <a href="{% url 'place_order' %}">Place Order</a>
+                <a href="{% url 'feedback_form' %}">Give Feedback</a>
+                <a href="{% url 'admin:index' %}">Admin Panel</a>
+            </nav>
+        </header>
+        {% block content %}
+        <div class="feedback-container">
+            <h2>Share Your Feedback</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="rating">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                    <input type="hidden" name="rating" id="rating-value"> <!-- Hidden field to store the rating -->
+                </div>
+                <textarea name="comment" placeholder="Your comments..." required></textarea>
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+        
+        <script>
+            // Star rating functionality
+            document.querySelectorAll('.star').forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = star.getAttribute('data-value');  // Get the value of the clicked star
+                    document.getElementById('rating-value').value = value;  // Set hidden input value
+                    updateStarDisplay(value);  // Update the display of stars
+                });
+        
+                // Optional: Add hover effect for rating stars
+                star.addEventListener('mouseover', () => {
+                    const value = star.getAttribute('data-value');
+                    updateStarDisplay(value);  // Show selected stars on hover
+                });
+        
+                star.addEventListener('mouseout', () => {
+                    updateStarDisplay(document.getElementById('rating-value').value);  // Revert stars to selected value
+                });
+            });
+        
+            function updateStarDisplay(value) {
+                document.querySelectorAll('.star').forEach(star => {
+                    const starValue = star.getAttribute('data-value');
+                    if (starValue <= value) {
+                        star.style.color = '#FFD700';  // Gold color for selected stars
+                    } else {
+                        star.style.color = '#ccc';  // Light gray for unselected stars
+                    }
+                });
+            }
+        </script>
+        {% endblock %}
+        
+</body>
+</html>
