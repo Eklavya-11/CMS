@@ -100,8 +100,6 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## 📸 Screenshots
-
 ## 🔧 Configuration
 Update `settings.py` with your database credentials:
 
